@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Client {
     private final String serverName;
@@ -21,40 +20,6 @@ public class Client {
     public Client(String serverName, int serverPort) {
         this.serverName = serverName;
         this.serverPort = serverPort;
-    }
-
-    public static void main(String[] args) throws IOException {
-        Client client = new Client("localhost", 8818);
-        client.addUserStatusListener(new UserStatusListener() {
-            @Override
-            public void online(String username) {
-                System.out.println("ONLINE: " + username);
-            }
-
-            @Override
-            public void offline(String username) {
-                System.out.println("OFFLINE: " + username);
-            }
-        });
-
-        client.addMsgListener(new MsgListener() {
-            @Override
-            public void onMsg(String fromUser, String msgBody) {
-                System.out.println("You got a message from " + fromUser + " =====> " + msgBody);
-            }
-        });
-
-        if (!client.connect()) {
-            System.err.println("Connection failed");
-        } else {
-            System.out.println("Connection success");
-            if (client.login("admin", "admin")) {
-                System.out.println("Login successful");
-                client.sendMsg("","");
-            } else {
-                System.err.println("Login failed");
-            }
-        }
     }
 
     public void sendMsg(String sendTo, String msgBody) throws IOException {
@@ -160,15 +125,7 @@ public class Client {
         userStatusListeners.add(listener);
     }
 
-    public void removeUserStatusListener(UserStatusListener listener) {
-        userStatusListeners.remove(listener);
-    }
-
     public void addMsgListener(MsgListener listener) {
         msgListeners.add(listener);
-    }
-
-    public void removeMsgListener(MsgListener listener) {
-        msgListeners.remove(listener);
     }
 }

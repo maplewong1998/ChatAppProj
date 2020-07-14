@@ -2,8 +2,7 @@ package com.cc;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.IOException;
 
 public class UserListPane extends JPanel implements UserStatusListener {
@@ -12,6 +11,7 @@ public class UserListPane extends JPanel implements UserStatusListener {
     private final Client client;
     private  JList<String> userListUI;
     private DefaultListModel<String> userListModel;
+    JButton logoutButton = new JButton("Logout");
 
     public UserListPane(Client client) {
         this.client = client;
@@ -21,6 +21,7 @@ public class UserListPane extends JPanel implements UserStatusListener {
         userListUI = new JList<>(userListModel);
         setLayout(new BorderLayout());
         add(new JScrollPane(userListUI), BorderLayout.CENTER);
+        add(logoutButton, BorderLayout.SOUTH);
 
         userListUI.addMouseListener(new MouseAdapter() {
             @Override
@@ -37,22 +38,23 @@ public class UserListPane extends JPanel implements UserStatusListener {
                 }
             }
         });
+
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doLogout();
+            }
+        });
     }
 
-    public static void main(String[] args) throws IOException {
-        Client client = new Client("localhost", 8818);
-
-
-        UserListPane userListPane = new UserListPane(client);
-        JFrame frame = new JFrame("User List");
-        frame.setDefaultCloseOperation((JFrame.EXIT_ON_CLOSE));
-        frame.setSize(500, 750);
-
-        frame.getContentPane().add(new JScrollPane(userListPane), BorderLayout.CENTER);
-        frame.setVisible(true);
-
-        if (client.connect()) {
-            client.login("admin", "admin");
+    private void doLogout() {
+        try {
+            SwingUtilities.getWindowAncestor(this).dispose();
+            client.logout();
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.setVisible(true);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
