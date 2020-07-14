@@ -1,0 +1,8 @@
+Server commands
+
+1. login [username] [password] - login
+2. logout / quit - logoff
+3. msg [username] [message] - send message to username
+4. join #[chatroom] - create chatroom
+5. msg #[chatroom] [message] - send message to chatroom
+6. leave #[chatroom] - leave chatroom
